@@ -1,0 +1,7 @@
+packages:
+  - "shared"
+  - "backend"
+  - "frontend"
+allowBuilds:
+  bcrypt: true
+  esbuild: true

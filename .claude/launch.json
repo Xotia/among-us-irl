@@ -1,0 +1,19 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "backend",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@among-us-irl/backend", "dev"],
+      "port": 3001,
+      "autoPort": false
+    },
+    {
+      "name": "frontend",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@among-us-irl/frontend", "dev"],
+      "port": 5173,
+      "autoPort": false
+    }
+  ]
+}

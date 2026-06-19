@@ -1,0 +1,1 @@
+ALTER TABLE "game_configs" ADD COLUMN "reveal_role_on_eject" boolean DEFAULT true NOT NULL;

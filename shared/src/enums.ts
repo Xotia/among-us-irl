@@ -1,0 +1,84 @@
+export enum GameStatus {
+  DRAFT = "DRAFT",
+  LOBBY_OPEN = "LOBBY_OPEN",
+  READY = "READY",
+  RUNNING = "RUNNING",
+  ENDED = "ENDED",
+  CANCELLED = "CANCELLED",
+}
+
+export enum GamePhase {
+  FREE_ROAM = "FREE_ROAM",
+  MEETING_IN_PROGRESS = "MEETING_IN_PROGRESS",
+  GAME_OVER_PENDING = "GAME_OVER_PENDING",
+}
+
+export enum PlayerRole {
+  CREWMATE = "CREWMATE",
+  IMPOSTOR = "IMPOSTOR",
+}
+
+export enum PlayerLifeState {
+  ALIVE = "ALIVE",
+  DEAD = "DEAD",
+  EJECTED = "EJECTED",
+}
+
+export enum ConnectionState {
+  CONNECTED = "CONNECTED",
+  DISCONNECTED = "DISCONNECTED",
+  RECONNECTING = "RECONNECTING",
+}
+
+export enum MeetingState {
+  IDLE = "IDLE",
+  REQUESTED = "REQUESTED",
+  OPEN = "OPEN",
+  DISCUSSION = "DISCUSSION",
+  VOTING = "VOTING",
+  RESOLVING = "RESOLVING",
+  CLOSED = "CLOSED",
+}
+
+export enum SabotageType {
+  OXYGEN = "OXYGEN",
+  ENERGY = "ENERGY",
+}
+
+export enum SabotageState {
+  NONE = "NONE",
+  STARTING = "STARTING",
+  ACTIVE = "ACTIVE",
+  RESOLVING = "RESOLVING",
+  RESOLVED = "RESOLVED",
+  FAILED = "FAILED",
+  COOLDOWN = "COOLDOWN",
+}
+
+export enum UserRole {
+  ADMIN = "ADMIN",
+  GUEST = "GUEST",
+}
+
+export enum TaskValidationMode {
+  ANY_PLAYER = "ANY_PLAYER",
+  ADMIN_ONLY = "ADMIN_ONLY",
+}
+
+export enum VoteTarget {
+  SKIP = "SKIP",
+}
+
+export enum GameOverReason {
+  TASKS_COMPLETED = "TASKS_COMPLETED",
+  IMPOSTORS_ELIMINATED = "IMPOSTORS_ELIMINATED",
+  IMPOSTORS_MAJORITY = "IMPOSTORS_MAJORITY",
+  TIMER_EXPIRED = "TIMER_EXPIRED",
+  SABOTAGE_EXPIRED = "SABOTAGE_EXPIRED",
+  CANCELLED = "CANCELLED",
+}
+
+export enum Winner {
+  CREWMATES = "CREWMATES",
+  IMPOSTORS = "IMPOSTORS",
+}
