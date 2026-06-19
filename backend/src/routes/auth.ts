@@ -7,13 +7,13 @@ import { reconnectGuest } from "../services/reconnectionService.js";
 const router: RouterType = Router();
 
 const loginSchema = z.object({
-  username: z.string().min(3).max(50),
-  password: z.string().min(6),
+  username: z.string().min(3, "Le nom d'utilisateur doit contenir au moins 3 caractères").max(50),
+  password: z.string().min(6, "Le mot de passe doit contenir au moins 6 caractères"),
 });
 
 const guestSchema = z.object({
-  pseudo: z.string().min(2).max(30).regex(/^[a-zA-Z0-9_\- àâéèêëïîôùûüÿçÀÂÉÈÊËÏÎÔÙÛÜŸÇ]+$/, "Pseudo invalide"),
-  gameCode: z.string().length(6),
+  pseudo: z.string().min(2, "Le pseudo doit contenir au moins 2 caractères").max(30, "Le pseudo ne peut pas dépasser 30 caractères").regex(/^[a-zA-Z0-9_\- àâéèêëïîôùûüÿçÀÂÉÈÊËÏÎÔÙÛÜŸÇ]+$/, "Pseudo invalide"),
+  gameCode: z.string().length(6, "Le code de la partie doit contenir 6 caractères"),
 });
 
 const registerSchema = z.object({

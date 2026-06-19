@@ -6,7 +6,7 @@ import {
   gameInstances,
   gameConfigs,
 } from "../models/schema.js";
-import { GameStatus, TaskValidationMode } from "@among-us-irl/shared";
+import { GameStatus, GamePhase, TaskValidationMode } from "@among-us-irl/shared";
 import type { TaskDTO } from "@among-us-irl/shared";
 
 export async function getGameTasks(gameId: string): Promise<TaskDTO[]> {
@@ -68,6 +68,8 @@ export async function completeTask(
     .limit(1);
   if (!game || game.status !== GameStatus.RUNNING)
     return { error: "La partie n'est pas en cours" };
+  if (game.phase !== GamePhase.FREE_ROAM)
+    return { error: "Impossible de valider des tâches pendant un rassemblement" };
 
   const [config] = await db
     .select()

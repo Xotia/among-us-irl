@@ -248,12 +248,15 @@ export async function resetAllGames(
         await db.delete(votes).where(eq(votes.meetingId, m.id));
       }
       await db.delete(deathEvents).where(eq(deathEvents.gameId, gid));
-      await db.delete(meetingStates).where(eq(meetingStates.gameId, gid));
       await db.delete(sabotageStates).where(eq(sabotageStates.gameId, gid));
       await db.delete(tasksTable).where(eq(tasksTable.gameId, gid));
+      await db.delete(meetingStates).where(eq(meetingStates.gameId, gid));
+    }
+    for (const gid of gameIds) {
       await db.delete(playersInGame).where(eq(playersInGame.gameId, gid));
+    }
+    for (const gid of gameIds) {
       await db.delete(guestSessions).where(eq(guestSessions.gameId, gid));
-      // playersInGame deleted before guestSessions (FK: players_in_game.guest_session_id → guest_sessions.id)
       await db.delete(gameConfigs).where(eq(gameConfigs.gameId, gid));
       await db.delete(gameInstances).where(eq(gameInstances.id, gid));
     }

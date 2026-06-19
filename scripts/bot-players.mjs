@@ -77,6 +77,9 @@ function createBot(pseudo, token, gameCode) {
     if (bot.role === "CREWMATE" && bot.alive) {
       scheduleTaskCompletion(bot);
     }
+    if (bot.role === "IMPOSTOR" && bot.alive) {
+      scheduleImpostorActions(bot);
+    }
   });
 
   socket.on("game:phase", (phase) => {
@@ -137,6 +140,17 @@ function createBot(pseudo, token, gameCode) {
   });
 
   return bot;
+}
+
+function scheduleImpostorActions(bot) {
+  // Trigger a sabotage after 10 seconds
+  setTimeout(() => {
+    if (!bot.alive) return;
+    const types = ["OXYGEN", "ENERGY"];
+    const type = types[Math.floor(Math.random() * types.length)];
+    bot.socket.emit("sabotage:trigger", type);
+    console.log(`[${bot.pseudo}] Triggering sabotage: ${type}`);
+  }, 10000 + Math.random() * 5000);
 }
 
 function scheduleTaskCompletion(bot) {
