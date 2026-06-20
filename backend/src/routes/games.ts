@@ -77,6 +77,7 @@ const configSchema = z
       .max(CONFIG_LIMITS.oxygenCodeLength.max)
       .regex(/^\d+$/, "Le code oxygène doit être numérique")
       .optional(),
+    singleUseSabotage: z.boolean().optional(),
     tasks: z
       .array(
         z.object({

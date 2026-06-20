@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../lib/auth";
 import { getSocket, connectSocket } from "../lib/socket";
+import { apiFetch } from "../lib/api";
 import { RoleReveal } from "./RoleReveal";
 import { playSound, playMusic, stopMusic } from "../lib/audio";
 import { UserRole, MeetingState, SabotageState, SabotageType } from "@among-us-irl/shared";
@@ -47,6 +48,7 @@ export function Game() {
   const [resolvingEnergy, setResolvingEnergy] = useState(false);
   const [connected, setConnected] = useState(true);
   const [cancelling, setCancelling] = useState(false);
+  const [oxygenCode, setOxygenCode] = useState<string | null>(null);
   const [timerWarning, setTimerWarning] = useState(false);
   const [showEvents, setShowEvents] = useState(false);
   const serverOffsetRef = useRef(0);
@@ -197,6 +199,12 @@ export function Game() {
       const stored = sessionStorage.getItem(`game_roles_${code}`);
       if (stored) {
         setAdminRoles(JSON.parse(stored));
+      }
+      const gid = gameId ?? sessionStorage.getItem(`game_id_${code}`);
+      if (gid) {
+        apiFetch<{ config: { oxygenCode?: string } }>(`/games/${gid}`)
+          .then((g) => setOxygenCode(g.config?.oxygenCode ?? null))
+          .catch(() => {});
       }
     }
 
@@ -570,9 +578,19 @@ export function Game() {
                 </>
               )}
               {isAdmin && (
-                <p className="text-gray-400 text-sm">
-                  En attente de la résolution par les joueurs…
-                </p>
+                <div className="text-center">
+                  <p className="text-gray-400 text-sm mb-3">
+                    En attente de la résolution par les joueurs…
+                  </p>
+                  {oxygenCode && (
+                    <div className="bg-gray-800 border border-gray-600 rounded-lg px-4 py-3">
+                      <p className="text-gray-400 text-xs mb-1">Code de désactivation</p>
+                      <p className="text-3xl font-mono font-bold tracking-widest text-red-400">
+                        {oxygenCode}
+                      </p>
+                    </div>
+                  )}
+                </div>
               )}
             </div>
           ) : (

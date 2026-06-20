@@ -1,0 +1,1 @@
+ALTER TABLE "game_configs" ADD COLUMN "single_use_sabotage" boolean DEFAULT true NOT NULL;

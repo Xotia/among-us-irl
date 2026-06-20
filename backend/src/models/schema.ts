@@ -116,6 +116,7 @@ export const gameConfigs = pgTable("game_configs", {
     .notNull(),
   oxygenCode: varchar("oxygen_code", { length: 4 }).default("1234").notNull(),
   revealRoleOnEject: boolean("reveal_role_on_eject").default(true).notNull(),
+  singleUseSabotage: boolean("single_use_sabotage").default(true).notNull(),
   tasksJson: jsonb("tasks_json").default([]).notNull(),
 });
 

@@ -76,6 +76,18 @@ export async function triggerSabotage(
     .limit(1);
   if (!config) return { error: "Configuration introuvable" };
 
+  if (config.singleUseSabotage) {
+    const pastEvents = await db
+      .select()
+      .from(gameEvents)
+      .where(and(eq(gameEvents.gameId, gameId), eq(gameEvents.type, "SABOTAGE_TRIGGERED")));
+    const alreadyUsed = pastEvents.some(
+      (e) => (e.payload as { sabotageType?: string })?.sabotageType === type
+    );
+    if (alreadyUsed)
+      return { error: "Ce type de sabotage a déjà été utilisé dans cette partie" };
+  }
+
   const timerEndsAt = new Date(Date.now() + config.sabotageDurationSeconds * 1000);
 
   if (existing) {

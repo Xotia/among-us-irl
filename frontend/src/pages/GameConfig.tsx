@@ -280,6 +280,25 @@ export function GameConfig() {
             </button>
           </div>
 
+          {/* Single use sabotage */}
+          <div className="flex items-center justify-between">
+            <label className="text-sm text-gray-400">
+              Sabotage unique par type
+            </label>
+            <button
+              type="button"
+              onClick={() => updateField("singleUseSabotage", !config.singleUseSabotage)}
+              className={`w-12 h-6 rounded-full transition-colors relative flex-shrink-0 ${
+                config.singleUseSabotage ? "bg-accent" : "bg-gray-600"
+              }`}
+            >
+              <span
+                className="absolute top-0.5 w-5 h-5 bg-white rounded-full transition-all"
+                style={{ left: config.singleUseSabotage ? "calc(100% - 1.375rem)" : "0.125rem" }}
+              />
+            </button>
+          </div>
+
           {/* Tasks */}
           <div>
             <label className="block text-sm text-gray-400 mb-2">

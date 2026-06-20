@@ -93,6 +93,7 @@ export async function createGame(
     taskValidationMode: presetConfig?.taskValidationMode ?? "ANY_PLAYER",
     oxygenCode: presetConfig?.oxygenCode ?? "4782",
     revealRoleOnEject: presetConfig?.revealRoleOnEject ?? true,
+    singleUseSabotage: presetConfig?.singleUseSabotage ?? true,
     tasksJson: tasks,
   });
 
@@ -123,6 +124,7 @@ export async function getGameConfig(
     taskValidationMode: cfg.taskValidationMode as "ANY_PLAYER" | "ADMIN_ONLY",
     oxygenCode: cfg.oxygenCode,
     revealRoleOnEject: cfg.revealRoleOnEject,
+    singleUseSabotage: cfg.singleUseSabotage,
     tasks: (cfg.tasksJson as TaskConfigItem[]) ?? [],
   };
 }
@@ -164,6 +166,7 @@ export async function updateGameConfig(
     update.taskValidationMode = partial.taskValidationMode;
   if (partial.oxygenCode !== undefined) update.oxygenCode = partial.oxygenCode;
   if (partial.revealRoleOnEject !== undefined) update.revealRoleOnEject = partial.revealRoleOnEject;
+  if (partial.singleUseSabotage !== undefined) update.singleUseSabotage = partial.singleUseSabotage;
   if (partial.tasks !== undefined) update.tasksJson = partial.tasks;
 
   if (Object.keys(update).length > 0) {

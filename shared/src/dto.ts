@@ -55,6 +55,7 @@ export interface GameConfigDTO {
   taskValidationMode: "ANY_PLAYER" | "ADMIN_ONLY";
   oxygenCode: string;
   revealRoleOnEject: boolean;
+  singleUseSabotage: boolean;
   tasks: TaskConfigItem[];
 }
 
@@ -103,6 +104,7 @@ export const DEFAULT_GAME_CONFIG: GameConfigDTO = {
   taskValidationMode: "ANY_PLAYER",
   oxygenCode: "4782",
   revealRoleOnEject: true,
+  singleUseSabotage: true,
   tasks: [
     { name: "Chiffres Romains", description: "Convertissez les chiffres en chiffres romains" },
     { name: "Décodage", description: "Déchiffrez le message codé" },
