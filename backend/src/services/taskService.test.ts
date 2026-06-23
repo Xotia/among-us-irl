@@ -133,13 +133,13 @@ describe("completeTask", () => {
   });
 
   it("returns error when game is not running", async () => {
-    selectResults = [[mockTask], [crewmatePlayer], [{ ...runningGame, status: GameStatus.LOBBY }]];
+    selectResults = [[mockTask], [crewmatePlayer], [{ ...runningGame, status: GameStatus.LOBBY_OPEN }]];
     const result = await completeTask(TASK_ID, CREWMATE_ID);
     expect(result).toEqual({ error: "La partie n'est pas en cours" });
   });
 
   it("returns error during meeting phase", async () => {
-    selectResults = [[mockTask], [crewmatePlayer], [{ ...runningGame, phase: GamePhase.MEETING }]];
+    selectResults = [[mockTask], [crewmatePlayer], [{ ...runningGame, phase: GamePhase.MEETING_IN_PROGRESS }]];
     const result = await completeTask(TASK_ID, CREWMATE_ID);
     expect(result).toEqual({ error: "Impossible de valider des tâches pendant un rassemblement" });
   });
