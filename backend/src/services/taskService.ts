@@ -6,7 +6,7 @@ import {
   gameInstances,
   gameConfigs,
 } from "../models/schema.js";
-import { GameStatus, GamePhase, TaskValidationMode } from "@among-us-irl/shared";
+import { GameStatus, GamePhase, TaskValidationMode, PlayerRole } from "@among-us-irl/shared";
 import type { TaskDTO } from "@among-us-irl/shared";
 
 export async function getGameTasks(gameId: string): Promise<TaskDTO[]> {
@@ -60,6 +60,7 @@ export async function completeTask(
   if (!player) return { error: "Joueur introuvable" };
   if (player.gameId !== task.gameId) return { error: "Joueur pas dans cette partie" };
   if (player.lifeState !== "ALIVE") return { error: "Les joueurs morts ne peuvent pas valider de tâches" };
+  if (player.role === PlayerRole.IMPOSTOR) return { error: "Les imposteurs ne peuvent pas valider de tâches" };
 
   const [game] = await db
     .select()
@@ -114,6 +115,7 @@ export async function uncompleteTask(
     .where(eq(playersInGame.id, playerId))
     .limit(1);
   if (!player) return { error: "Joueur introuvable" };
+  if (player.role === PlayerRole.IMPOSTOR) return { error: "Les imposteurs ne peuvent pas modifier les tâches" };
 
   const [updated] = await db
     .update(tasks)
