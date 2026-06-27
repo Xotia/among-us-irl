@@ -146,6 +146,8 @@ export function Lobby() {
 
   const connectedCount = players.filter((p) => p.isConnected).length;
   const isAdmin = auth?.role === UserRole.ADMIN;
+  const manualImpostorCount = Object.values(manualRoles).filter((r) => r === "IMPOSTOR").length;
+  const canStartGame = canStart && (!manualMode || manualImpostorCount >= 1);
 
   return (
     <div className="flex-1 flex flex-col items-center p-6">
@@ -246,20 +248,28 @@ export function Lobby() {
           >
             {manualMode ? "Assignation manuelle activée" : "Activer l'assignation manuelle des rôles"}
           </button>
-          {manualMode && (
-            <p className="text-xs text-gray-500 text-center mb-3">
-              Cliquez sur un joueur pour changer son rôle.
-              {Object.values(manualRoles).filter((r) => r === "IMPOSTOR").length} imposteur(s) sélectionné(s).
-            </p>
-          )}
+          {manualMode && (() => {
+            const impostorCount = Object.values(manualRoles).filter((r) => r === "IMPOSTOR").length;
+            return (
+              <div className="text-center mb-3">
+                <p className="text-xs text-gray-500">
+                  Cliquez sur un joueur pour changer son rôle.
+                </p>
+                <p className={`text-xs font-medium mt-1 ${impostorCount === 0 ? "text-red-400" : "text-gray-400"}`}>
+                  {impostorCount} imposteur{impostorCount > 1 ? "s" : ""} sélectionné{impostorCount > 1 ? "s" : ""}
+                  {impostorCount === 0 && " — il en faut au moins 1"}
+                </p>
+              </div>
+            );
+          })()}
           {startError && (
             <p className="text-red-400 text-sm text-center mb-2">{startError}</p>
           )}
           <button
             onClick={handleStart}
-            disabled={!canStart || starting}
+            disabled={!canStartGame || starting}
             className={`w-full py-3 rounded-lg font-bold text-lg transition-colors ${
-              canStart && !starting
+              canStartGame && !starting
                 ? "bg-accent hover:bg-accent/80 text-white"
                 : "bg-gray-700 text-gray-500 cursor-not-allowed"
             }`}

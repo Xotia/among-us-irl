@@ -113,5 +113,6 @@ export interface GameSyncStateDTO {
   myLifeState: PlayerLifeState;
   gameTimerEndsAt: number | null;
   coImpostors?: string[];
+  usedSabotages?: SabotageType[];
   serverTime: number;
 }

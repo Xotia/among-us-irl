@@ -80,6 +80,7 @@ export async function emitGameStarted(io: TypedServer, result: StartGameResult) 
       myLifeState: "ALIVE" as any,
       gameTimerEndsAt: gameTimerEndsAt.getTime(),
       coImpostors,
+      usedSabotages: [],
       serverTime: Date.now(),
     });
   }

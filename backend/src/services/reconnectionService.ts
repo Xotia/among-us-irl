@@ -13,7 +13,7 @@ import type { GuestPayload } from "../middleware/auth.js";
 import { getAlivePlayers } from "./deathService.js";
 import { getGameTasks } from "./taskService.js";
 import { getActiveMeeting } from "./meetingService.js";
-import { getActiveSabotage } from "./sabotageService.js";
+import { getActiveSabotage, getUsedSabotageTypes } from "./sabotageService.js";
 
 export async function reconnectGuest(reconnectToken: string) {
   const [session] = await db
@@ -84,6 +84,7 @@ export async function buildGameSyncState(
   const gameTasks = await getGameTasks(gameId);
   const meeting = await getActiveMeeting(gameId);
   const sabotage = await getActiveSabotage(gameId);
+  const usedSabotages = await getUsedSabotageTypes(gameId);
 
   let coImpostors: string[] | undefined;
   if (player.role === "IMPOSTOR") {
@@ -109,6 +110,7 @@ export async function buildGameSyncState(
     myLifeState: player.lifeState as any,
     gameTimerEndsAt: game.gameTimerEndsAt?.getTime() ?? null,
     coImpostors,
+    usedSabotages,
     serverTime: Date.now(),
   };
 }
@@ -128,6 +130,7 @@ export async function buildAdminSyncState(
   const gameTasks = await getGameTasks(gameId);
   const meeting = await getActiveMeeting(gameId);
   const sabotage = await getActiveSabotage(gameId);
+  const usedSabotages = await getUsedSabotageTypes(gameId);
 
   return {
     gameId,
@@ -141,6 +144,7 @@ export async function buildAdminSyncState(
     myRole: "CREWMATE" as any,
     myLifeState: "ALIVE" as any,
     gameTimerEndsAt: game.gameTimerEndsAt?.getTime() ?? null,
+    usedSabotages,
     serverTime: Date.now(),
   };
 }

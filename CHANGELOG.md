@@ -3,7 +3,8 @@
 ## [Unreleased]
 
 ### Added
-- **Assignation manuelle des rôles** : l'admin peut activer un mode dans le lobby pour choisir manuellement qui est crewmate ou imposteur avant de lancer la partie.
+- **Assignation manuelle des rôles** : l'admin peut activer un mode dans le lobby pour choisir manuellement qui est crewmate ou imposteur avant de lancer la partie. En mode manuel, le paramètre `impostorCount` de la config est ignoré (contrôle total). Validation : au moins 1 imposteur requis, sinon le bouton "Lancer" est désactivé.
+- **Indicateur visuel sabotage unique** : quand l'option "sabotage unique par type" est activée, les boutons de sabotage déjà utilisés sont grisés, barrés et marqués d'un "✕" pour que l'imposteur voie clairement ce qui reste disponible. L'état est synchronisé à la reconnexion via `usedSabotages` dans `GameSyncStateDTO`.
 - **Blocage des imposteurs sur les tâches** : les imposteurs ne peuvent plus valider ni décocher des tâches (anti-triche).
 - **Affichage du code oxygène pour l'admin** : le code de désactivation s'affiche sur l'écran admin pendant un sabotage oxygène.
 - **Mode sabotage unique** (`singleUseSabotage`) : chaque type de sabotage ne peut être utilisé qu'une seule fois par partie (configurable dans les réglages).

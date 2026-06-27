@@ -244,6 +244,19 @@ function clearSabotageTimer(gameId: string) {
   }
 }
 
+export async function getUsedSabotageTypes(gameId: string): Promise<SabotageType[]> {
+  const events = await db
+    .select()
+    .from(gameEvents)
+    .where(and(eq(gameEvents.gameId, gameId), eq(gameEvents.type, "SABOTAGE_TRIGGERED")));
+  const types = new Set<SabotageType>();
+  for (const e of events) {
+    const t = (e.payload as { sabotageType?: string })?.sabotageType;
+    if (t === SabotageType.OXYGEN || t === SabotageType.ENERGY) types.add(t);
+  }
+  return [...types];
+}
+
 export async function getActiveSabotage(gameId: string): Promise<SabotageDTO | null> {
   const [sabotage] = await db
     .select()

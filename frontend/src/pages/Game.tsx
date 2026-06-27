@@ -44,6 +44,7 @@ export function Game() {
   const [forcingMeeting, setForcingMeeting] = useState(false);
   const [sabotage, setSabotage] = useState<SabotageDTO | null>(null);
   const [sabotageTimeLeft, setSabotageTimeLeft] = useState("");
+  const [usedSabotages, setUsedSabotages] = useState<Set<string>>(new Set());
   const [oxygenCodeInput, setOxygenCodeInput] = useState("");
   const [resolvingEnergy, setResolvingEnergy] = useState(false);
   const [connected, setConnected] = useState(true);
@@ -155,6 +156,9 @@ export function Game() {
 
     socket.on("sabotage:update", (s) => {
       setSabotage(s);
+      if (s.state === SabotageState.ACTIVE) {
+        setUsedSabotages((prev) => new Set([...prev, s.type]));
+      }
       if (s.state === SabotageState.NONE) {
         setSabotage(null);
       }
@@ -193,6 +197,9 @@ export function Game() {
       }
       setMeeting(state.meeting);
       setSabotage(state.sabotage);
+      if (state.usedSabotages) {
+        setUsedSabotages(new Set(state.usedSabotages));
+      }
     });
 
     if (auth.role === UserRole.ADMIN) {
@@ -933,20 +940,24 @@ export function Game() {
             Sabotages
           </h2>
           <div className="flex gap-3">
-            <button
-              onClick={() => handleTriggerSabotage(SabotageType.OXYGEN)}
-              disabled={sabotage !== null}
-              className="flex-1 bg-red-900/50 hover:bg-red-900/80 disabled:opacity-30 text-red-300 font-bold py-3 px-4 rounded-xl transition-colors"
-            >
-              Oxygène
-            </button>
-            <button
-              onClick={() => handleTriggerSabotage(SabotageType.ENERGY)}
-              disabled={sabotage !== null}
-              className="flex-1 bg-red-900/50 hover:bg-red-900/80 disabled:opacity-30 text-red-300 font-bold py-3 px-4 rounded-xl transition-colors"
-            >
-              Énergie
-            </button>
+            {([SabotageType.OXYGEN, SabotageType.ENERGY] as const).map((type) => {
+              const used = usedSabotages.has(type);
+              const label = type === SabotageType.OXYGEN ? "Oxygène" : "Énergie";
+              return (
+                <button
+                  key={type}
+                  onClick={() => handleTriggerSabotage(type)}
+                  disabled={sabotage !== null || used}
+                  className={`flex-1 font-bold py-3 px-4 rounded-xl transition-colors ${
+                    used
+                      ? "bg-gray-800 text-gray-600 line-through cursor-not-allowed"
+                      : "bg-red-900/50 hover:bg-red-900/80 disabled:opacity-30 text-red-300"
+                  }`}
+                >
+                  {used ? `${label} ✕` : label}
+                </button>
+              );
+            })}
           </div>
           {sabotage?.state === SabotageState.COOLDOWN && (
             <p className="text-xs text-gray-500 text-center mt-2">
