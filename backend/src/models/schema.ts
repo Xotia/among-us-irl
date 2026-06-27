@@ -118,6 +118,7 @@ export const gameConfigs = pgTable("game_configs", {
   revealRoleOnEject: boolean("reveal_role_on_eject").default(true).notNull(),
   singleUseSabotage: boolean("single_use_sabotage").default(true).notNull(),
   tasksJson: jsonb("tasks_json").default([]).notNull(),
+  manualRoles: jsonb("manual_roles").$type<Record<string, "CREWMATE" | "IMPOSTOR"> | null>(),
 });
 
 export const presets = pgTable("presets", {

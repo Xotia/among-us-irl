@@ -71,6 +71,13 @@ Cela démarre en parallèle :
 - **Backend** sur `http://localhost:3001`
 - **Frontend** sur `http://localhost:5173`
 
+## Tests
+
+```bash
+# Lancer les tests backend
+pnpm --filter @among-us-irl/backend test
+```
+
 ## Commandes utiles
 
 ```bash
@@ -98,6 +105,19 @@ pnpm lint
 # Build de production
 pnpm build
 ```
+
+## Fonctionnalités
+
+- Création et configuration de parties (nombre de joueurs, imposteurs, durée, tâches, etc.)
+- Lobby en temps réel avec Socket.IO
+- Attribution aléatoire ou manuelle des rôles (crewmate / imposteur)
+- Système de tâches validables par les crewmates (les imposteurs ne peuvent ni valider ni décocher)
+- Sabotage oxygène avec code de désactivation (mode usage unique configurable)
+- Réunions d'urgence et vote d'éjection
+- Mort, éjection et fin de partie automatique
+- Import/export de presets de configuration (JSON)
+- PWA installable sur mobile
+- Interface admin complète (kill, forcer réunion, toggle tâches, reset)
 
 ## Structure du projet
 

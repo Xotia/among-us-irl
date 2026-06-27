@@ -12,6 +12,9 @@ import {
   importPreset,
 } from "../services/gameService.js";
 import { startGame } from "../services/gameStateMachine.js";
+import { db } from "../db.js";
+import { eq } from "drizzle-orm";
+import { gameConfigs } from "../models/schema.js";
 import { emitGameStarted } from "../socket/gameHandler.js";
 import { markPlayerDead } from "../services/deathService.js";
 import { forceMeeting } from "../services/meetingService.js";
@@ -152,6 +155,34 @@ router.patch("/:id/config", requireAuth, requireAdmin, async (req, res) => {
     return;
   }
   res.json(result);
+});
+
+// PUT /games/:id/manual-roles — set or clear manual role assignments
+router.put("/:id/manual-roles", requireAuth, requireAdmin, async (req, res) => {
+  const manualRolesSchema = z.record(z.string().uuid(), z.enum(["CREWMATE", "IMPOSTOR"])).nullable();
+  const parsed = manualRolesSchema.safeParse(req.body.roles);
+  if (!parsed.success) {
+    res.status(400).json({ error: "Format invalide : { roles: { [playerId]: 'CREWMATE' | 'IMPOSTOR' } }" });
+    return;
+  }
+
+  const [config] = await db
+    .select()
+    .from(gameConfigs)
+    .where(eq(gameConfigs.gameId, req.params.id as string))
+    .limit(1);
+
+  if (!config) {
+    res.status(404).json({ error: "Configuration introuvable" });
+    return;
+  }
+
+  await db
+    .update(gameConfigs)
+    .set({ manualRoles: parsed.data })
+    .where(eq(gameConfigs.gameId, req.params.id as string));
+
+  res.json({ manualRoles: parsed.data });
 });
 
 // POST /games/:id/start — launch the game

@@ -61,24 +61,39 @@ export async function startGame(
     };
   }
 
-  const impostorCount = Math.min(
-    config.impostorCount,
-    Math.floor(connectedPlayers.length / 3)
-  );
+  const manualRoles = config.manualRoles as Record<string, "CREWMATE" | "IMPOSTOR"> | null;
+  let roleAssignments: { playerId: string; pseudo: string; role: PlayerRole }[];
 
-  if (impostorCount < 1) {
-    return { error: "Pas assez de joueurs pour avoir un imposteur" };
+  if (manualRoles && Object.keys(manualRoles).length > 0) {
+    const manualImpostorCount = Object.values(manualRoles).filter((r) => r === "IMPOSTOR").length;
+    if (manualImpostorCount < 1) {
+      return { error: "L'assignation manuelle doit contenir au moins un imposteur" };
+    }
+    roleAssignments = connectedPlayers.map((p) => ({
+      playerId: p.id,
+      pseudo: p.pseudo,
+      role: manualRoles[p.id] === "IMPOSTOR" ? PlayerRole.IMPOSTOR : PlayerRole.CREWMATE,
+    }));
+  } else {
+    const impostorCount = Math.min(
+      config.impostorCount,
+      Math.floor(connectedPlayers.length / 3)
+    );
+
+    if (impostorCount < 1) {
+      return { error: "Pas assez de joueurs pour avoir un imposteur" };
+    }
+
+    const shuffled = [...connectedPlayers].sort(() => crypto.randomBytes(1)[0] / 255 - 0.5);
+    const impostors = shuffled.slice(0, impostorCount);
+    const impostorIds = new Set(impostors.map((p) => p.id));
+
+    roleAssignments = connectedPlayers.map((p) => ({
+      playerId: p.id,
+      pseudo: p.pseudo,
+      role: impostorIds.has(p.id) ? PlayerRole.IMPOSTOR : PlayerRole.CREWMATE,
+    }));
   }
-
-  const shuffled = [...connectedPlayers].sort(() => crypto.randomBytes(1)[0] / 255 - 0.5);
-  const impostors = shuffled.slice(0, impostorCount);
-  const impostorIds = new Set(impostors.map((p) => p.id));
-
-  const roleAssignments = connectedPlayers.map((p) => ({
-    playerId: p.id,
-    pseudo: p.pseudo,
-    role: impostorIds.has(p.id) ? PlayerRole.IMPOSTOR : PlayerRole.CREWMATE,
-  }));
 
   for (const assignment of roleAssignments) {
     await db
@@ -117,7 +132,7 @@ export async function startGame(
     type: "GAME_STARTED",
     payload: {
       playerCount: connectedPlayers.length,
-      impostorCount,
+      impostorCount: roleAssignments.filter((a) => a.role === PlayerRole.IMPOSTOR).length,
       gameDurationSeconds: config.gameDurationSeconds,
     },
   });

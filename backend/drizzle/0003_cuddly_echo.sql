@@ -1,0 +1,1 @@
+ALTER TABLE "game_configs" ADD COLUMN "manual_roles" jsonb;
